@@ -7,51 +7,42 @@ from subprocess import call
 import errno
 import os
 import io
-import time
+from util import RateLimited, debug
 
 
-DEBUG = False
 DATA_SET_URL = 'https://scans.io/series/alexa-dl-top1mil'
 DATA_BASE_URL = 'https://scans.io/zsearch/'
 COMPRESSION_EXT = '.lz4'
+HASH_FILE = 'known_hashes.txt'
 
-def RateLimited(maxPerSecond):
-    minInterval = 1.0 / float(maxPerSecond)
-    def decorate(func):
-        lastTimeCalled = [0.0]
-        def rateLimitedFunction(*args,**kargs):
-            elapsed = time.clock() - lastTimeCalled[0]
-            leftToWait = minInterval - elapsed
-            if leftToWait>0:
-                time.sleep(leftToWait)
-            ret = func(*args,**kargs)
-            lastTimeCalled[0] = time.clock()
-            return ret
-        return rateLimitedFunction
-    return decorate
+def getKnownHashes():
+	with open(HASH_FILE, 'r+') as f:
+		return [l.split(',')[0] for l in f.readlines()]
 
-def debug(s):
-	if DEBUG:
-		print s
+def recordHash(h, name):
+	with open(HASH_FILE, 'a+') as f:
+		f.write('{},{}\n'.format(h, name))
 
 def getARecords():
-	all_days = 'alexa-top1m-a-zgrab.*.csv'
+	now = datetime.datetime.now()
+	s = now.strftime('%Y%m%d')
+	all_days = 'alexa-top1m-a-zgrab.*?.csv'
 	#Cache for debug
 	matches = sorted(glob.glob('*-alexa-top1m-a-zgrab.csv'), reverse=True)
-	if matches:
-		return matches[0]
-
-
-	resource_re = re.compile('(' + DATA_BASE_URL + '.*-' + all_days + COMPRESSION_EXT + ')')
+	file_re = '({}.*?-{}{})'.format(DATA_BASE_URL, all_days, COMPRESSION_EXT)
+	hash_re = '.*?<code>(.*?)</code>'
+	resource_re = re.compile('{}{}'.format(file_re, hash_re), re.DOTALL)
 	response = requests.get(DATA_SET_URL).content
 	m = resource_re.search(response)
-	if m:
+	if m and m.groups()[1] not in getKnownHashes():
 		debug('Fetching: {}'.format(m.groups()[0]))
 		file_name = wget.download(m.groups()[0])
 		call(['unlz4', file_name])
 		new_name = '{}-alexa-top1m-a-zgrab.csv'.format(s)
 		call(['mv',  file_name.rstrip(COMPRESSION_EXT), new_name])
+		recordHash(m.groups()[1], m.groups()[0])
 		return new_name
+	return matches[0]
 
 @RateLimited(100)
 def printIp(ip):
@@ -70,4 +61,4 @@ def getIps(n):
 		if len(row) >= 2:
 			printIp(row[0])
 
-getIps(100)
+getIps(1)

@@ -1,0 +1,4 @@
+known_hashes.txt
+*csv*
+*.json
+*pyc
