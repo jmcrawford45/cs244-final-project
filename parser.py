@@ -61,4 +61,4 @@ def getIps(n):
 		if len(row) >= 2:
 			printIp(row[0])
 
-getIps(1)
+getIps(1000000)
