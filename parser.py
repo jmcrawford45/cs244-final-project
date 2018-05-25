@@ -16,11 +16,12 @@ COMPRESSION_EXT = '.lz4'
 HASH_FILE = 'known_hashes.txt'
 
 def getKnownHashes():
-	with open(HASH_FILE, 'r+') as f:
+	with open(HASH_FILE, 'a+') as f:
+		f.seek(0)
 		return [l.split(',')[0] for l in f.readlines()]
 
 def recordHash(h, name):
-	with open(HASH_FILE, 'a+') as f:
+	with open(HASH_FILE, 'w') as f:
 		f.write('{},{}\n'.format(h, name))
 
 def getARecords():
@@ -44,7 +45,6 @@ def getARecords():
 		return new_name
 	return matches[0]
 
-@RateLimited(100)
 def printIp(ip):
 	print ip
 
