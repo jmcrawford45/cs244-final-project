@@ -2,4 +2,4 @@
 
 cd
 cd cs244-final-project/
-python gather-stek.py 
+python gather_stek.py 
