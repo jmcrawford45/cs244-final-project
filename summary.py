@@ -16,7 +16,6 @@ def exportStek():
 					stats['other error'] += 1
 				elif 'session_ticket' in entry['data']['tls']:
 					print entry['ip'], entry['data']['tls']['session_ticket']
-					stats['session_ticket' + entry['data']['tls']['session_ticket']['value'][:4]] += 1
 					stats['session_ticket'] += 1
 				elif 'session_id' in entry['data']['tls']['server_hello']:
 					if entry['data']['tls']['server_hello']['session_id'] != "":

@@ -21,7 +21,7 @@ def getKnownHashes():
 		return [l.split(',')[0] for l in f.readlines()]
 
 def recordHash(h, name):
-	with open(HASH_FILE, 'w') as f:
+	with open(HASH_FILE, 'a') as f:
 		f.write('{},{}\n'.format(h, name))
 
 def getARecords():
