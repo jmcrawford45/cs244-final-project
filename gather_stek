@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cd
+cd cs244-final-project/
+python gather-stek.py 
