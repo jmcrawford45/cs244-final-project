@@ -38,9 +38,8 @@ def getARecords():
 	if m and m.groups()[1] not in getKnownHashes():
 		debug('Fetching: {}'.format(m.groups()[0]))
 		file_name = wget.download(m.groups()[0])
-		call(['unlz4', file_name])
 		new_name = '{}-alexa-top1m-a-zgrab.csv'.format(s)
-		call(['mv',  file_name.rstrip(COMPRESSION_EXT), new_name])
+		call(['/usr/local/bin/unlz4', file_name, new_name])
 		recordHash(m.groups()[1], m.groups()[0])
 		return new_name
 	return matches[0]

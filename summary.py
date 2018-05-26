@@ -5,7 +5,7 @@ from collections import defaultdict
 stats = defaultdict(int)
 
 def exportStek():
-	for f in glob.glob('*-stek.json'):
+	for f in sorted(glob.glob('*-stek.json'), reverse=True):
 		with open(f) as data:
 			for raw in data:
 				entry = json.loads(raw)
