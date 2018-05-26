@@ -1,4 +1,5 @@
 known_hashes.txt
+whitelist.txt
 *csv*
 *.json
 *pyc
