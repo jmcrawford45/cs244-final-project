@@ -2,4 +2,5 @@
 
 cd
 cd cs244-final-project/
+python parser.py > whitelist.txt
 python gather_stek.py 
