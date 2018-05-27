@@ -3,3 +3,4 @@ whitelist.txt
 *csv*
 *.json
 *pyc
+*png

@@ -1,3 +1,4 @@
+cd
 sudo apt-get update
 sudo apt-get install build-essentials
 sudo apt-get install git
@@ -17,6 +18,3 @@ cd
 git clone https://github.com/lz4/lz4
 cd lz4
 sudo make install
-cd
-git clone https://github.com/jmcrawford45/cs244-final-project
-cd cs244-final-project
