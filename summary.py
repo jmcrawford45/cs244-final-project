@@ -5,6 +5,7 @@ from collections import defaultdict
 import numpy as np
 from pylab import *
 from util import getARecords
+from plotter import *
 
 
 class SummaryBuilder(object):
@@ -41,27 +42,45 @@ class SummaryBuilder(object):
 				self.churn[ip] += 1
 		self.consistentTop1M = [k for k,v in self.churn.items() if v == max(self.churn.values())]
 		print 'Daily churn'.format(self.dailyChurn)
-		self.plotChurn(self.dailyChurn)
-
-	# Plot the percentage of sites leaving the top !M list from the previous day
-	# Tested with self.plotChurn([0,0.02,.05, .0392, .05, .042, .054, .063])
-	def plotChurn(self, data):
-		plot(range(len(data)), data)
-		ylabel('Sites leaving Alexa Top 1M List')
-		xlabel('Days')
-		title('Alexa Top 1M Daily Churn')
-		axes().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
-		savefig('churn.png')
+		plotChurn(self.dailyChurn)
 
 	def mockSTEKReuse(self):
-		
-		pass
+		weights = [
+			[]
+		]
 
 	def plotSTEKReuse(self, data):
-		pass
+		categories = [
+			'No ticket',
+			'days <= 1',
+			'1 < days <= 3',
+			'3 < days <= 7',
+			'7 < days <= 10',
+			'days > 10',
+		]
+		show()
+
+	def plotSTEKCdf(self, data):
+		# Create some test data
+		dx = .01
+		X  = np.arange(0,60,dx)
+		Y  = exp(-X**2)
+
+		# Normalize the data to a proper PDF
+		Y /= (dx*Y).sum()
+
+		# Compute the CDF
+		CY = np.cumsum(Y*dx)
+
+		# Plot both
+		plot(X,Y)
+		plot(X,CY,'r--')
+		ylabel('Alexa 1M TLS Only')
+		xlabel('Max STEK lifetime (in days)')
+		show()
 
 	def getKnownHashes():
-		with open(STEK_DB, 'a+') as f:
+		with open(self.STEK_DB, 'a+') as f:
 			f.write()
 
 	# Print the distribution of errors across known ERRORS
@@ -126,20 +145,5 @@ class SummaryBuilder(object):
 		self.getChurn()
 		self.exportStek()
 		self.printSummary()
-
-# Create some test data
-dx = .01
-X  = np.arange(-2,2,dx)
-Y  = exp(-X**2)
-
-# Normalize the data to a proper PDF
-Y /= (dx*Y).sum()
-
-# Compute the CDF
-CY = np.cumsum(Y*dx)
-
-# Plot both
-# plot(X,Y)
-# plot(X,CY,'r--')
 
 SummaryBuilder().run()
