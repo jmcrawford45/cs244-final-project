@@ -27,6 +27,9 @@ def getIps(n):
 		if len(row) >= 2:
 			printIp(row[0])
 
+def getIDFromStek(stek):
+	pass
+
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument('N', type=int, default=1000000,
 	help='How many top 1M sites to sample')

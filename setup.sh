@@ -1,11 +1,11 @@
 cd
 sudo apt-get update
-sudo apt-get install build-essentials
+sudo apt-get install build-essential
 sudo apt-get install git
 sudo apt-get install zmap
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python get-pip.py
-sudo pip install wget
+sudo pip install wget python-dateutil
 wget https://dl.google.com/go/go1.10.2.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.10.2.linux-amd64.tar.gz
 export PATH=$PATH:/usr/sbin:/usr/local/sbin:/usr/local/go/bin
