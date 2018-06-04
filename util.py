@@ -8,7 +8,8 @@ import wget
 from subprocess import call
 from collections import defaultdict
 import numpy as np
-DEBUG = False
+import json
+DEBUG = True
 
 DATA_SET_URL = 'https://scans.io/series/alexa-dl-top1mil'
 DATA_BASE_URL = 'https://scans.io/zsearch/'
@@ -25,14 +26,14 @@ def extractStek(ticket):
             struct.unpack('{}s'.format(KEY_LEN), ticket)[0]
         )
     except Exception, e:
-        print e
+        debug(e)
     # LibreSSL - ssl_session_st
     try:
         candidates.append(
             struct.unpack('ii{}s'.format(KEY_LEN), ticket)[2]
         )
     except Exception, e:
-        print e
+        debug(e)
     #OpenSSL - ssl_session_st
     try:
         # Todo: Confirm second size_t is 32 bits
@@ -40,7 +41,7 @@ def extractStek(ticket):
             struct.unpack('ii64s{}s'.format(KEY_LEN), ticket)[3]
         )
     except Exception, e:
-        print e
+        debug(e)
     #GNUTLS - session_ticket.{hc}
     try:
         # Todo: Confirm first ssize_t is 32 bits
@@ -48,14 +49,14 @@ def extractStek(ticket):
             struct.unpack('i{}s'.format(KEY_LEN), ticket)[1]
         )
     except Exception, e:
-        print e
+        debug(e)
     #mbedTLS - ssl_ticket.c
     try:
         candidates.append(
             struct.unpack('4s', ticket)[0]
         )
     except Exception, e:
-        print e
+        debug(e)
     return candidates
 
 def getKnownHashes():
@@ -73,7 +74,7 @@ def getScansIOFile(all_days, local_name):
     match_re =  local_name.format('*')
     #Cache for debug
     matches = sorted(glob.glob(match_re), reverse=True)
-    file_re = '({}.*?-{}{})'.format(DATA_BASE_URL, all_days, COMPRESSION_EXT)
+    file_re = '({}[^><]*?-{}{})'.format(DATA_BASE_URL, all_days, COMPRESSION_EXT)
     hash_re = '.*?<code>(.*?)</code>'
     resource_re = re.compile('{}{}'.format(file_re, hash_re), re.DOTALL)
     response = requests.get(DATA_SET_URL).content
@@ -94,20 +95,18 @@ def getARecords():
 # Return a map from IP to rank
 def getSiteRankings():
     rank_file = getScansIOFile('alexa-top1m-www-alookups.*?.json', '{}-alexa-top1m-www-alookups.json')
-    print rank_file
     res = defaultdict(lambda: 1000000)
     with open(rank_file) as ranks:
         for raw in ranks:
             entry = json.loads(raw)
-            print entry
             if 'alexa_rank' in entry:
                 rank = entry['alexa_rank']
                 if 'altered_name' in entry:
                     res[entry['altered_name']] = rank
                 if 'name' in entry:
                     res[entry['name']] = rank
-                if 'ipv4_addresses' in entry['data']:
-                    for addr in entry['ipv4_addresses']:
+                if 'data' in entry and 'ipv4_addresses' in entry['data']:
+                    for addr in entry['data']['ipv4_addresses']:
                         res[addr] = rank
     return res 
 

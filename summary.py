@@ -215,7 +215,7 @@ class SummaryBuilder(object):
 		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
 		if minuteLifetimes:
 			return plotMinutelyCDF(data=minuteLifetimes, is_stek=False)
-		print 'No data found for figure 1'
+		debug('No data found for figure 1')
 
 	def plotFigure2(self):
 		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.stekResumeLifetimes.values()]
@@ -224,7 +224,7 @@ class SummaryBuilder(object):
 			advertisedLifetimes.append(stek_host.getAdvertisedLifetime())
 		if minuteLifetimes and advertisedLifetimes:
 			return plotMinutelyCDF(data=minuteLifetimes, advertised=advertisedLifetimes, is_stek=True)
-		print 'No data found for figure 2'
+		debug('No data found for figure 2')
 
 
 	def plotFigure3(self):
@@ -232,9 +232,12 @@ class SummaryBuilder(object):
 		plotSTEKCDF(dayLifetimes)
 
 	def plotFigure4(self):
-		print self.rankings
-		print self.classifyStekReuse()
-		plotSTEKReuse(self.classifyStekReuse(), self.FIGURE_3_CATEGORIES, self.FIGURE_3_BAR_NAMES)
+		debug(self.classifyStekReuse())
+		plotSTEKReuse(
+			self.classifyStekReuse(),
+			self.FIGURE_3_BAR_NAMES,
+			self.FIGURE_3_CATEGORIES
+		)
 
 	def run(self):
 		self.getChurn()

@@ -1,6 +1,7 @@
 from pylab import *
 from datetime import timedelta
 from collections import Counter
+from util import *
 
 PLOT_BASE = 'writeup/figures/'
 CDF_MARKS = 24.
@@ -13,7 +14,7 @@ def plotChurn(data):
 	xlabel('Days')
 	title('Alexa Top 1M Daily Churn')
 	axes().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
-	savefig('{}churn.pdf'.format(PLOT_BASE))
+	savefig('{}churn.png'.format(PLOT_BASE))
 
 def getBarBottom(layers, categories, i, bar_names):
 	bar_begin = np.zeros(len(bar_names))
@@ -40,8 +41,9 @@ def plotSTEKReuse(data, bar_names, categories):
 	bars = list()
 	ind = np.arange(len(bar_names)) * 5
 	layers = dict()
-	for c in categories:
-		layers[c] = np.array([bar[c] for bar in data])
+	for i, c in enumerate(categories):
+		layers[c] = np.array([bar[i] for bar in data])
+	debug(layers)
 	for i in range(len(categories)):
 		bar_begin = getBarBottom(layers, categories, i, bar_names)
 		bars.append(plt.bar(ind, layers[categories[i]], width=2, bottom=bar_begin, color=colors[i]))
@@ -49,7 +51,7 @@ def plotSTEKReuse(data, bar_names, categories):
 	axes().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 	legend(bars, categories,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 	tight_layout()
-	savefig('{}stek_stacked.pdf'.format(PLOT_BASE))
+	savefig('{}stek_stacked.png'.format(PLOT_BASE))
 
 
 def  genBoundedNormalSample(mu, sigma, n, lo, hi):
@@ -75,7 +77,7 @@ def plotSTEKCDF(data=None, num_bins=14*24):
 	xlabel('Max STEK lifetime (in days)')
 	legend(p, ['Alexa1M Hosts'], loc='lower right')
 	grid(True)
-	savefig('{}max_stek_cdf.pdf'.format(PLOT_BASE))
+	savefig('{}max_stek_cdf.png'.format(PLOT_BASE))
 
 # Expects a list of floats where each element is a STEK lifetime in days
 def plotMinutelyCDF(
