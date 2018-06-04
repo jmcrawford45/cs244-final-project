@@ -1,4 +1,13 @@
 import time
+import struct
+import datetime
+import glob
+import re
+import requests
+import wget
+from subprocess import call
+from collections import defaultdict
+import numpy as np
 DEBUG = False
 
 DATA_SET_URL = 'https://scans.io/series/alexa-dl-top1mil'
@@ -8,7 +17,46 @@ HASH_FILE = 'known_hashes.txt'
 
 # Extract the session key identifier if possible from the ticket
 def extractStek(ticket):
-    pass
+    candidates = list()
+    KEY_LEN = 16
+    # Default - RFC 5077
+    try:
+        candidates.append(
+            struct.unpack('{}s'.format(KEY_LEN), ticket)[0]
+        )
+    except Exception, e:
+        print e
+    # LibreSSL - ssl_session_st
+    try:
+        candidates.append(
+            struct.unpack('ii{}s'.format(KEY_LEN), ticket)[2]
+        )
+    except Exception, e:
+        print e
+    #OpenSSL - ssl_session_st
+    try:
+        # Todo: Confirm second size_t is 32 bits
+        candidates.append(
+            struct.unpack('ii64s{}s'.format(KEY_LEN), ticket)[3]
+        )
+    except Exception, e:
+        print e
+    #GNUTLS - session_ticket.{hc}
+    try:
+        # Todo: Confirm first ssize_t is 32 bits
+        candidates.append(
+            struct.unpack('i{}s'.format(KEY_LEN), ticket)[1]
+        )
+    except Exception, e:
+        print e
+    #mbedTLS - ssl_ticket.c
+    try:
+        candidates.append(
+            struct.unpack('4s', ticket)[0]
+        )
+    except Exception, e:
+        print e
+    return candidates
 
 def getKnownHashes():
     with open(HASH_FILE, 'a+') as f:
@@ -46,10 +94,12 @@ def getARecords():
 # Return a map from IP to rank
 def getSiteRankings():
     rank_file = getScansIOFile('alexa-top1m-www-alookups.*?.json', '{}-alexa-top1m-www-alookups.json')
+    print rank_file
     res = defaultdict(lambda: 1000000)
     with open(rank_file) as ranks:
         for raw in ranks:
             entry = json.loads(raw)
+            print entry
             if 'alexa_rank' in entry:
                 rank = entry['alexa_rank']
                 if 'altered_name' in entry:
@@ -58,7 +108,7 @@ def getSiteRankings():
                     res[entry['name']] = rank
                 if 'ipv4_addresses' in entry['data']:
                     for addr in entry['ipv4_addresses']:
-                        res[addr] = rank 
+                        res[addr] = rank
     return res 
 
     
@@ -66,6 +116,12 @@ def getSiteRankings():
 def debug(s):
 	if DEBUG:
 		print s
+
+def normalize(v):
+    norm=np.linalg.norm(v, ord=1)
+    if norm==0:
+        return v
+    return v/norm
 
 def RateLimited(maxPerSecond):
     minInterval = 1.0 / float(maxPerSecond)

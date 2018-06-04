@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  2 JUN 2018 00:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  4 JUN 2018 00:16
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -1044,101 +1044,96 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 10.0pt on input line 59.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 12.0pt on input line 59.
- (./body.tex <figures/churn.png, id=52, 462.528pt x 346.896pt>
+ (./body.tex <figures/churn.png, id=40, 462.528pt x 346.896pt>
 File: figures/churn.png Graphic file (type png)
  <use figures/churn.png>
 Package pdftex.def Info: figures/churn.png used on input line 10.
-(pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
+(pdftex.def)             Requested size: 506.295pt x 379.73944pt.
 
-Overfull \hbox (221.37936pt too wide) in paragraph at lines 10--11
+Overfull \hbox (265.1475pt too wide) in paragraph at lines 10--11
  [][] 
  []
 
-<figures/id_minutely_cdf.png, id=54, 462.528pt x 346.896pt>
+<figures/id_minutely_cdf.png, id=42, 462.528pt x 346.896pt>
 File: figures/id_minutely_cdf.png Graphic file (type png)
 
 <use figures/id_minutely_cdf.png>
-Package pdftex.def Info: figures/id_minutely_cdf.png used on input line 17.
+Package pdftex.def Info: figures/id_minutely_cdf.png used on input line 21.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 
-Overfull \hbox (221.37936pt too wide) in paragraph at lines 17--18
+Overfull \hbox (221.37936pt too wide) in paragraph at lines 21--22
  [][] 
  []
 
-<figures/stek_minutely_cdf.png, id=55, 462.528pt x 346.896pt>
+<figures/stek_minutely_cdf.png, id=43, 462.528pt x 346.896pt>
 File: figures/stek_minutely_cdf.png Graphic file (type png)
 
 <use figures/stek_minutely_cdf.png>
-Package pdftex.def Info: figures/stek_minutely_cdf.png used on input line 24.
+Package pdftex.def Info: figures/stek_minutely_cdf.png used on input line 28.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 
-Overfull \hbox (221.37936pt too wide) in paragraph at lines 24--25
+Overfull \hbox (221.37936pt too wide) in paragraph at lines 28--29
  [][] 
  []
 
-<figures/max_stek_cdf.png, id=56, 462.528pt x 346.896pt>
+<figures/max_stek_cdf.png, id=44, 462.528pt x 346.896pt>
 File: figures/max_stek_cdf.png Graphic file (type png)
 
 <use figures/max_stek_cdf.png>
-Package pdftex.def Info: figures/max_stek_cdf.png used on input line 31.
+Package pdftex.def Info: figures/max_stek_cdf.png used on input line 36.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 
-Overfull \hbox (221.37936pt too wide) in paragraph at lines 31--32
+Overfull \hbox (221.37936pt too wide) in paragraph at lines 36--37
  [][] 
  []
 
-<figures/stek_stacked.png, id=57, 462.528pt x 346.896pt>
+<figures/stek_stacked.png, id=45, 462.528pt x 346.896pt>
 File: figures/stek_stacked.png Graphic file (type png)
 
 <use figures/stek_stacked.png>
-Package pdftex.def Info: figures/stek_stacked.png used on input line 38.
+Package pdftex.def Info: figures/stek_stacked.png used on input line 43.
 (pdftex.def)             Requested size: 462.52686pt x 346.89514pt.
 
-Overfull \hbox (221.37936pt too wide) in paragraph at lines 38--39
+Overfull \hbox (221.37936pt too wide) in paragraph at lines 43--44
  [][] 
  []
 
-
-Underfull \vbox (badness 1152) has occurred while \output is active []
-
- [1.1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
-
-]) (./paper.bbl
+) (./paper.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 8.0pt on input line 48.
-
-Underfull \vbox (badness 1478) has occurred while \output is active []
-
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 55.
- [2.2 <./figures/churn.png> <./figures/id_minutely_cdf.png>])
+)
 - LAST -
-Extra skip:27.36398pt
-Left:550.89514pt/1.90399pt
-Right:525.43515pt/0.0pt
-Output:546.16515pt
- [3.3 <./figures/stek_minutely_cdf.png> <./figures/max_stek_cdf.png>] [4.4
+Extra skip:5.99196pt
+Left:398.39996pt/2.305pt
+Right:392.825pt/1.888pt
+Output:398.61247pt
+ [1.1{/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+
+]
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 66.
+ [2.2 <./figures/churn.png> <./figures/id_minutely_cdf.png>]
+[3.3 <./figures/stek_minutely_cdf.png> <./figures/max_stek_cdf.png>] [4.4
 
  <./figures/stek_stacked.png>]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 66.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 66.
-
-(./paper.aux)
+ (./paper.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 66.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 66.
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 7CAFE64326108E1605DC5D51A0B53756;1235.
+(rerunfilecheck)             Checksum: 6656565CD230CC7E7419C6014EC931F7;903.
  ) 
 Here is how much of TeX's memory you used:
- 18437 strings out of 492995
- 276971 string characters out of 6132704
- 414109 words of memory out of 5000000
- 21354 multiletter control sequences out of 15000+600000
- 94201 words of font info for 155 fonts, out of 8000000 for 9000
+ 18419 strings out of 492995
+ 276610 string characters out of 6132704
+ 424105 words of memory out of 5000000
+ 21351 multiletter control sequences out of 15000+600000
+ 93109 words of font info for 147 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 60i,11n,94p,1100b,567s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc
-}{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}
+ 60i,11n,94p,1100b,436s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc
+}{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{
 /usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}</
 usr/local/texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb
@@ -1147,10 +1142,10 @@ usr/local/texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb
 ineT.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLi
 bertineTB.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/libertine/
 LinLibertineTI.pfb>
-Output written on paper.pdf (4 pages, 447839 bytes).
+Output written on paper.pdf (4 pages, 443040 bytes).
 PDF statistics:
- 125 PDF objects out of 1000 (max. 8388607)
- 95 compressed objects within 1 object stream
- 22 named destinations out of 1000 (max. 500000)
- 29310 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 113 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
+ 19 named destinations out of 1000 (max. 500000)
+ 29286 words of extra memory for PDF output out of 29859 (max. 10000000)
 

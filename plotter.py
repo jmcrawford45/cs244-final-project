@@ -3,15 +3,17 @@ from datetime import timedelta
 from collections import Counter
 
 PLOT_BASE = 'writeup/figures/'
+CDF_MARKS = 24.
 # Plot the percentage of sites leaving the top 1M list from the previous day
 # Tested with self.plotChurn([0,0.02,.05, .0392, .05, .042, .054, .063])
 def plotChurn(data):
+	cla()
 	plot(range(len(data)), data)
 	ylabel('Sites leaving Alexa Top 1M List')
 	xlabel('Days')
 	title('Alexa Top 1M Daily Churn')
 	axes().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
-	savefig('{}churn.png'.format(PLOT_BASE))
+	savefig('{}churn.pdf'.format(PLOT_BASE))
 
 def getBarBottom(layers, categories, i, bar_names):
 	bar_begin = np.zeros(len(bar_names))
@@ -24,6 +26,9 @@ def getBarBottom(layers, categories, i, bar_names):
 # Expects a collection of 1 normalized vectors of size
 # len(bar_names) * len(categories)
 def plotSTEKReuse(data, bar_names, categories):
+	cla()
+	if not data:
+		return mockSTEKReuse()
 	colors = [
 		'r',
 		'b',
@@ -44,7 +49,7 @@ def plotSTEKReuse(data, bar_names, categories):
 	axes().yaxis.set_major_formatter(FuncFormatter(lambda y, _: '{:.0%}'.format(y)))
 	legend(bars, categories,bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 	tight_layout()
-	savefig('{}stek_stacked.png'.format(PLOT_BASE))
+	savefig('{}stek_stacked.pdf'.format(PLOT_BASE))
 
 
 def  genBoundedNormalSample(mu, sigma, n, lo, hi):
@@ -58,25 +63,25 @@ def  genBoundedNormalSample(mu, sigma, n, lo, hi):
 
 # Expects a list of floats where each element is a STEK lifetime in days
 def plotSTEKCDF(data=None, num_bins=14*24):
+	cla()
 	if not data:
 		data = genBoundedNormalSample(3,2,250000,0,14)
 	# Create some test data
 	counts, bin_edges = np.histogram (data, bins=num_bins, normed=True)
 	cdf = np.cumsum (counts)
-
-
-	p = plot(bin_edges[1:], cdf/cdf[-1], marker='D', markevery=len(data)/10000)
+	p = plot(bin_edges[1:], cdf/cdf[-1], marker='D', markevery=int(num_bins/CDF_MARKS))
 
 	ylabel('Consistent Alexa1M TLS Only')
 	xlabel('Max STEK lifetime (in days)')
 	legend(p, ['Alexa1M Hosts'], loc='lower right')
 	grid(True)
-	savefig('{}max_stek_cdf.png'.format(PLOT_BASE))
+	savefig('{}max_stek_cdf.pdf'.format(PLOT_BASE))
 
 # Expects a list of floats where each element is a STEK lifetime in days
 def plotMinutelyCDF(
 		data=None, advertised=None, num_bins=14*24,
 		is_stek=True):
+	cla()
 	file_name = '{}stek_minutely_cdf' if is_stek else '{}id_minutely_cdf'
 	if not data:
 		data = genBoundedNormalSample(200,150,250000,0,1440)
@@ -86,12 +91,12 @@ def plotMinutelyCDF(
 	counts, bin_edges = np.histogram(data, bins=num_bins, normed=True)
 	cdf = np.cumsum (counts)
 
-	p0 = plot(bin_edges[1:], cdf/cdf[-1], marker='D', markevery=len(data)/10000)
+	p0 = plot(bin_edges[1:], cdf/cdf[-1], marker='D', markevery=int(num_bins/CDF_MARKS))
 	p1 = None
 	if is_stek:
 		counts, bin_edges = np.histogram(advertised, bins=num_bins, normed=True)
 		cdf = np.cumsum (counts)
-		p1 = plot(bin_edges[1:], cdf/cdf[-1], marker='o', markevery=len(advertised)/10000)
+		p1 = plot(bin_edges[1:], cdf/cdf[-1], marker='o', markevery=int(num_bins/CDF_MARKS))
 	ylabel('Consistent Alexa1M HTTPS Only')
 	xlabel('Max successful resumption delay (in minutes)')
 	if is_stek:
@@ -144,4 +149,3 @@ def mockSTEKReuse():
 		top100K,
 		top1M
 	], bar_names, categories)
-plotMinutelyCDF(is_stek=False)

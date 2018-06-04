@@ -4,12 +4,13 @@ import glob
 from collections import defaultdict
 import numpy as np
 from pylab import *
-from util import getARecords, getSiteRankings, extractStek
+from util import *
 from plotter import *
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 SECONDS_PER_DAY = 60*60*24
+SECONDS_PER_MINUTE = 60
 
 class StekHost(object):
 
@@ -17,9 +18,10 @@ class StekHost(object):
 		self.host = host
 		self.steks = defaultdict(list)
 		self.lifetimes = list()
+		self.stekIssuer = False
 
 	def getMaxLifetime(self):
-		if lifetimes:
+		if self.lifetimes:
 			return max(self.lifetimes)
 		return timedelta(seconds=0)
 
@@ -30,7 +32,13 @@ class StekHost(object):
 			self.lifetimes.append(maxTime-minTime)
 
 	def addStek(self, stek, ts):
+		self.stekIssuer = True
 		self.steks[stek].append(ts)
+
+	def getAdvertisedLifetime(self):
+		if not self.advertisedLifetime:
+			return timedelta(seconds=0)
+		return self.advertisedLifetime
 
 class StekHostDict(defaultdict):
 	def __missing__(self, key):
@@ -67,7 +75,6 @@ class SummaryBuilder(object):
 	]
 
 
-
 	def __init__(self):
 		self.stats = defaultdict(int)
 		self.churn = defaultdict(int)
@@ -75,6 +82,10 @@ class SummaryBuilder(object):
 		self.steks = StekHostDict()
 		self.rankings = getSiteRankings()
 		self.maxLifetimes = defaultdict(lambda: timedelta(seconds=0))
+		self.stekResumeLifetimes = defaultdict()
+		self.stekResumes = StekHostDict()
+		self.sessionResumeLifetimes = defaultdict()
+		self.sessionResumes = StekHostDict()
 
 	# Compute the daily churn and store how many days
 	# each IP was in the top 1M in the churn dict.
@@ -106,15 +117,15 @@ class SummaryBuilder(object):
 
 	# Print the distribution of errors across known ERRORS
 	def errorSummary(self):
-		total_errors = sum(stats[e] for e in self.ERRORS)
-		return ', '.join(['{} - {:.0%}'.format(e, stats[e]/total_errors) for e in self.ERRORS])	
+		total_errors = sum(self.stats[e] for e in self.ERRORS)
+		return ', '.join(['{} - {:.0%}'.format(e, self.stats[e]/total_errors) for e in self.ERRORS])	
 
 	def handleError(self, entry):
 		errorIdentified = False
 		for e in self.ERRORS:
 			if e in entry['error']:
 				errorIdentified = True
-				stats[e] += 1
+				self.stats[e] += 1
 		if not errorIdentified:
 			print 'Unidentified error: {}'.format(error['entry'])
 			stats[self.ERRORS[-1]] += 1
@@ -122,14 +133,13 @@ class SummaryBuilder(object):
 	def handleSuccess(self, entry):
 		self.success.add(entry['ip'])
 		if 'session_ticket' in entry['data']['tls']:
-			print entry['ip'], entry['data']['tls']['session_ticket']
 			stek = entry['data']['tls']['session_ticket']['value']
 			ts = parse(entry['timestamp'])
 			self.steks[entry['ip']].addStek(stek, ts)
-			stats['session_ticket'] += 1
+			self.stats['session_ticket'] += 1
 		if 'session_id' in entry['data']['tls']['server_hello']:
 			if entry['data']['tls']['server_hello']['session_id'] != "":
-				stats['session_id'] += 1
+				self.stats['session_id'] += 1
 
 	def exportStek(self):
 		for f in sorted(glob.glob('*-stek.json'), reverse=True):
@@ -138,6 +148,8 @@ class SummaryBuilder(object):
 					entry = json.loads(raw)
 					self.stats['tls_attempts'] += 1
 					if entry['ip'] in self.consistentTop1M:
+						if entry['ip'] not in self.steks:
+							self.steks[entry['ip']] = StekHost(entry['ip'])
 						if 'error' in entry:
 							self.handleError(entry)
 						else:
@@ -160,29 +172,82 @@ class SummaryBuilder(object):
 				).format(consistentAndSuccess, consistentAndSuccess/dataset_total),
 			# Common failures
 			('The distribution of the {:,} failed connections is as follows: {}'
-				).format(total_errors, errorSummary()),
+				).format(total_errors, self.errorSummary()),
 		]
 		print measurements
 
+	def getFigure3BarIndex(self, rank):
+		if rank <= 100:
+			return 0
+		elif rank <= 1000:
+			return 1
+		elif rank <= 10000:
+			return 2
+		elif rank <= 100000:
+			return 3
+		return 4
+
+	def getFigure3CategoryIndex(self, stek_host):
+		if not stek_host.stekIssuer:
+			return 0
+		else:
+			maxLifetime = stek_host.getMaxLifetime()
+			if maxLifetime <= timedelta(days=1):
+				return 1
+			elif maxLifetime <= timedelta(days=3):
+				return 2
+			if maxLifetime <= timedelta(days=7):
+				return 3
+			if maxLifetime <= timedelta(days=10):
+				return 4
+		return 5
+
+	def classifyStekReuse(self):
+		res = [[0 for col in range(len(self.FIGURE_3_CATEGORIES))] for row in range(len(self.FIGURE_3_BAR_NAMES))]
+		for host, stek_host in self.steks.items():
+			row = self.getFigure3BarIndex(self.rankings[host])
+			col = self.getFigure3CategoryIndex(stek_host)
+			res[row][col] += 1
+		res = [normalize(np.array(l)) for l in res]
+		return res
+
 	def plotFigure1(self):
-		pass
+		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
+		if minuteLifetimes:
+			return plotMinutelyCDF(data=minuteLifetimes, is_stek=False)
+		print 'No data found for figure 1'
 
 	def plotFigure2(self):
-		pass
+		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.stekResumeLifetimes.values()]
+		advertisedLifetimes = list()
+		for stek_host in self.stekResumeLifetimes.values():
+			advertisedLifetimes.append(stek_host.getAdvertisedLifetime())
+		if minuteLifetimes and advertisedLifetimes:
+			return plotMinutelyCDF(data=minuteLifetimes, advertised=advertisedLifetimes, is_stek=True)
+		print 'No data found for figure 2'
+
 
 	def plotFigure3(self):
 		dayLifetimes = [td.total_seconds()/SECONDS_PER_DAY for td in self.maxLifetimes.values()]
 		plotSTEKCDF(dayLifetimes)
 
 	def plotFigure4(self):
-		pass
+		print self.rankings
+		print self.classifyStekReuse()
+		plotSTEKReuse(self.classifyStekReuse(), self.FIGURE_3_CATEGORIES, self.FIGURE_3_BAR_NAMES)
 
 	def run(self):
 		self.getChurn()
 		self.exportStek()
-		for host in self.steks().values():
+		for host in self.steks.values():
 			host.computeLifetimes()
 			self.maxLifetimes[host.host] = host.getMaxLifetime()
+		for host in self.stekResumes.values():
+			host.computeLifetimes()
+			self.stekResumeLifetimes[host.host] = host.getMaxLifetime()
+		for host in self.sessionResumes.values():
+			host.computeLifetimes()
+			self.sessionResumeLifetimes[host.host] = host.getMaxLifetime()
 		self.plotFigure1()
 		self.plotFigure2()
 		self.plotFigure3()
