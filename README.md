@@ -7,7 +7,7 @@ and 1TB boot disk, default for everything else.)
 ```
 git clone https://github.com/jmcrawford45/cs244-final-project
 cd cs244-final-project
-sudo setup.sh
+sudo sh setup.sh
 ```
 ### Running your own scan
 To start a scan of the top 1 million websites in the background, simply run
