@@ -98,21 +98,25 @@ class SummaryBuilder(object):
 	# Compute the daily churn and store how many days
 	# each IP was in the top 1M in the churn dict.
 	def getChurn(self):
-		prevSeen = set()
 		self.dailyChurn = list()
+		self.dayMap = defaultdict(lambda: set())
 		for f in sorted(glob.glob(DATA_RE), reverse=True):
-			seen = set()
 			with open(f) as data:
 				for raw in data:
 					self.entry_count += 1
 					if self.entry_count % 100000 == 0:
 						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
 					entry = json.loads(raw)
-					seen.add(entry['ip'])
-			self.dailyChurn.append(1-len(seen&prevSeen)/len(seen))
+					ts = parse(entry['timestamp']).date()
+					self.dayMap.add(entry['ip'])
+		prevSeen = set()
+		for ts in sorted(self.dailyChurn):
+			if not prevSeen:
+				self.dailyChurn.append(0)
+			else:
+				seen = self.dailyChurn[ts]
+				self.dailyChurn.append(1-len(seen&prevSeen)/len(seen))
 			prevSeen = seen
-			for ip in seen:
-				self.churn[ip] += 1
 		self.consistentTop1M = [k for k,v in self.churn.items() if v == max(self.churn.values())]
 		print 'churn'
 		print self.dailyChurn
