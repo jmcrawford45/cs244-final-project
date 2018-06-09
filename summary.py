@@ -11,6 +11,7 @@ from base64 import b64decode
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
 DATA_RE = 'all-steks.json'
+entry_count = 0
 
 class StekHost(object):
 
@@ -102,6 +103,9 @@ class SummaryBuilder(object):
 			seen = set()
 			with open(f) as data:
 				for raw in data:
+					entry_count += 1
+					if entry_count % 100000 == 0:
+						print '{} entries processed'.format(entry_count)
 					entry = json.loads(raw)
 					seen.add(entry['ip'])
 			self.dailyChurn.append(1-len(seen&prevSeen)/len(seen))
@@ -157,9 +161,13 @@ class SummaryBuilder(object):
 				self.sessionIdSupport[entry['ip']] = True
 
 	def exportStek(self):
+		entry_count = 0
 		for f in sorted(glob.glob(DATA_RE), reverse=True):
 			with open(f) as data:
 				for raw in data:
+					entry_count += 1
+					if entry_count % 100000 == 0:
+						print '{} entries processed'.format(entry_count)
 					entry = json.loads(raw)
 					self.stats['tls_attempts'] += 1
 					if entry['ip'] in self.consistentTop1M:
