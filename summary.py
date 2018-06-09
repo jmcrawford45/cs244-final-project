@@ -108,7 +108,7 @@ class SummaryBuilder(object):
 						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
 					entry = json.loads(raw)
 					ts = parse(entry['timestamp']).date()
-					self.dayMap.add(entry['ip'])
+					self.dayMap[ts].add(entry['ip'])
 		prevSeen = set()
 		for ts in sorted(self.dailyChurn):
 			if not prevSeen:
