@@ -12,6 +12,7 @@ from base64 import b64decode
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
+DATA_RE = '*-stek.json'
 
 class StekHost(object):
 
@@ -98,7 +99,7 @@ class SummaryBuilder(object):
 	def getChurn(self):
 		prevSeen = set()
 		self.dailyChurn = list()
-		for f in sorted(glob.glob('*-stek.json'), reverse=True):
+		for f in sorted(glob.glob(DATA_RE), reverse=True):
 			seen = set()
 			with open(f) as data:
 				for raw in data:
@@ -117,9 +118,15 @@ class SummaryBuilder(object):
 			host.computeLifetimes()
 		
 
-	def getKnownHashes():
+	def writeSteks(self):
 		with open(self.STEK_DB, 'a+') as f:
-			f.write()
+			for host in self.steks.values():
+				f.write(json.dumps({
+						'ip': host.host,
+						'steks': host.steks,
+						'advertised': host.advertised,
+						'stekIssuer': host.stekIssuer 
+					}))
 
 	# Print the distribution of errors across known ERRORS
 	def errorSummary(self):
@@ -151,7 +158,7 @@ class SummaryBuilder(object):
 				self.sessionIdSupport[entry['ip']] = True
 
 	def exportStek(self):
-		for f in sorted(glob.glob('*-stek.json'), reverse=True):
+		for f in sorted(glob.glob(DATA_RE), reverse=True):
 			with open(f) as data:
 				for raw in data:
 					entry = json.loads(raw)
@@ -263,6 +270,7 @@ class SummaryBuilder(object):
 		for host in self.sessionResumes.values():
 			host.computeLifetimes()
 			self.sessionResumeLifetimes[host.host] = host.getMaxLifetime()
+		# self.writeSteks()
 		self.plotFigure1()
 		self.plotFigure2()
 		self.plotFigure3()

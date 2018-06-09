@@ -22,6 +22,13 @@ KEY_LEN = 16
 
 # Extract the session key identifier if possible from the ticket
 def extractStek(ticket):
+    nssId = 'NSS!'
+    if nssId in ticket:
+        start = ticket.index(nssId) + len(nssId)
+        try:
+            return list(ticket[start: start + KEY_LEN])
+        except Exception, e:
+            return list(ticket)
     candidates = list(ticket)
     try:
         prefix_len = KEY_LEN
