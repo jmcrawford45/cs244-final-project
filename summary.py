@@ -10,7 +10,7 @@ from base64 import b64decode
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
-DATA_RE = 'test.json'
+DATA_RE = 'all-steks.json'
 
 class StekHost(object):
 
@@ -34,8 +34,9 @@ class StekHost(object):
 
 	def addStek(self, stek, ts):
 		self.stekIssuer = True
-		for s in extractStek(b64decode(stek)):
-			self.steks[s].append(ts)
+		for st in extractStek(b64decode(stek)):
+			for ek in st:
+				self.steks[ek].append(ts)
 
 	def getAdvertisedLifetime(self):
 		if not self.advertisedLifetime:
