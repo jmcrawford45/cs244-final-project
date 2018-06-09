@@ -105,7 +105,7 @@ class SummaryBuilder(object):
 				for raw in data:
 					self.entry_count += 1
 					if self.entry_count % 100000 == 0:
-						print '{} entries processed'.format(self.entry_count)
+						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
 					entry = json.loads(raw)
 					seen.add(entry['ip'])
 			self.dailyChurn.append(1-len(seen&prevSeen)/len(seen))
@@ -167,7 +167,7 @@ class SummaryBuilder(object):
 				for raw in data:
 					self.entry_count += 1
 					if self.entry_count % 100000 == 0:
-						print '{} entries processed'.format(self.entry_count)
+						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
 					entry = json.loads(raw)
 					self.stats['tls_attempts'] += 1
 					if entry['ip'] in self.consistentTop1M:
