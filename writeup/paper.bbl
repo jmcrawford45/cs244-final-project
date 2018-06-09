@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{1}
+\begin{thebibliography}{2}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -36,6 +36,23 @@
 \providecommand\bibinfo[2]{#2}
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Salowey, Zhou, Eronen, and Tschofenig}{Salowey
+  et~al\mbox{.}}{2008}]%
+        {RFC5077}
+\bibfield{author}{\bibinfo{person}{J. Salowey}, \bibinfo{person}{H. Zhou},
+  \bibinfo{person}{P. Eronen}, {and} \bibinfo{person}{H. Tschofenig}.}
+  \bibinfo{year}{2008}\natexlab{}.
+\newblock \bibinfo{booktitle}{{\em Transport Layer Security (TLS) Session
+  Resumption without Server-Side State}}.
+\newblock \bibinfo{type}{RFC} 5077. \bibinfo{institution}{RFC Editor}.
+\newblock
+\showISSN{2070-1721}
+\showURL{%
+\url{http://www.rfc-editor.org/rfc/rfc5077.txt}}
+\newblock
+\shownote{\url{http://www.rfc-editor.org/rfc/rfc5077.txt}.}
+
 
 \bibitem[\protect\citeauthoryear{Springall, Durumeric, and Halderman}{Springall
   et~al\mbox{.}}{2016}]%

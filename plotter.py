@@ -81,28 +81,24 @@ def plotSTEKCDF(data=None, num_bins=14*24):
 
 # Expects a list of floats where each element is a STEK lifetime in days
 def plotMinutelyCDF(
-		data=None, advertised=None, num_bins=14*24,
+		data=None, num_bins=14*24,
 		is_stek=True):
 	cla()
-	file_name = '{}stek_minutely_cdf' if is_stek else '{}id_minutely_cdf'
 	if not data:
-		data = genBoundedNormalSample(200,150,250000,0,1440)
-	if is_stek:
-		advertised = genBoundedNormalSample(180,200,250000,0,1440)
+		data = genBoundedNormalSample(200,200,250000,0,14)
+	file_name = '{}stek_minutely_cdf' if is_stek else '{}id_minutely_cdf'
 	# Create some test data
 	counts, bin_edges = np.histogram(data, bins=num_bins, normed=True)
 	cdf = np.cumsum (counts)
 
 	p0 = plot(bin_edges[1:], cdf/cdf[-1], marker='D', markevery=int(num_bins/CDF_MARKS))
-	p1 = None
-	if is_stek:
-		counts, bin_edges = np.histogram(advertised, bins=num_bins, normed=True)
-		cdf = np.cumsum (counts)
-		p1 = plot(bin_edges[1:], cdf/cdf[-1], marker='o', markevery=int(num_bins/CDF_MARKS))
 	ylabel('Consistent Alexa1M HTTPS Only')
-	xlabel('Max successful resumption delay (in minutes)')
 	if is_stek:
-		legend(p1, ['Advertised lifetime hints'], loc='lower right')
+		xlabel('Advertised STEK Lifetime (in minutes)')
+	else:
+		xlabel('Max succesful resumption delay (in minutes)')
+	if is_stek:
+		legend(p0, ['Advertised lifetime hints'], loc='lower right')
 	tight_layout()
 	grid(True)
 	savefig(file_name.format(PLOT_BASE))

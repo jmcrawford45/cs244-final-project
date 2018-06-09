@@ -14,7 +14,7 @@
 %\setcopyright{cagov}
 %\setcopyright{cagovmixed}
 
-\settopmatter{printacmref=false, printccs=false, printfolios=true}
+\settopmatter{printacmref=false, printccs=false, printfolios=false}
 
 % DOI
 \acmDOI{}
@@ -50,10 +50,10 @@
 \email{jared13@stanford.edu}
 
 % The default list of authors is too long for headers}
-\renewcommand{\shortauthors}{X.et al.}
+\renewcommand{\shortauthors}{Crawford}
 
 \begin{abstract}
-    TLS provides secure communication lines between end users and web servers. However, establishing this communication line requires additional overhead in the form of transport level handshake round trips and computationally expensive cryptographic operations. To reduce this overhead in bursty web traffic, HTTPS supports many mechanisms (such as TLS session tickets and private value reuse in public key exchange) to reuse these secure connection values for a short period of time. These performance optimizations tradeoff with the forward secrecy of user web traffic. In early 2016, a team at the University of Michigan investigated the extent to which the most popular sites were reusing these values in order to make site operators more aware of the risk involved in doing so\cite{Springall:2016:MSH:2987443.2987480}. In this report, I attempt to reproduce these findings by collecting more recent data (May 2018) on TLS cryptography shortcutes.
+    Server authenticity, privacy over communication lines, and integrity of transport level data are desirable for many popular applications such as web browsing, email, and Voice over IP. The Transport Layer Security protocol (TLS) provides these security properties between web servers and web browsers at the transport layer. A typical connection over TLS today is a multistep interactive process between server and client which includes an exchange of public key information, a negotiation on which ciphers to use for the resulting communication, and advertisement for support of a variety of TLS extensions. Thus, establishing this secure communication line incurs an initial latency overhead in the form of multiple transport level handshake round trip times. \cite{RFC5077} To reduce this overhead for the common case of bursty connections in frequent but short intervals, HTTPS supports many mechanisms (such as TLS session tickets and private value reuse in public key exchange) to reuse these secure connection values for a short period of time. These performance optimizations tradeoff with the forward secrecy of user web traffic. In early 2016, a team at the University of Michigan investigated the extent to which the most popular sites were reusing these values in order to make site operators more aware of the risk involved in doing so\cite{Springall:2016:MSH:2987443.2987480}. In this report, I attempt to reproduce these findings by collecting more recent data (May 2018) on TLS cryptography shortcutes.
 \end{abstract}
 
 \maketitle

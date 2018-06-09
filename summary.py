@@ -8,6 +8,7 @@ from util import *
 from plotter import *
 from datetime import datetime, timedelta
 from dateutil.parser import parse
+from base64 import b64decode
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
@@ -19,6 +20,7 @@ class StekHost(object):
 		self.steks = defaultdict(list)
 		self.lifetimes = list()
 		self.stekIssuer = False
+		self.advertised = timedelta(seconds=0)
 
 	def getMaxLifetime(self):
 		if self.lifetimes:
@@ -33,7 +35,8 @@ class StekHost(object):
 
 	def addStek(self, stek, ts):
 		self.stekIssuer = True
-		self.steks[stek].append(ts)
+		for s in extractStek(b64decode(stek)):
+			self.steks[s].append(ts)
 
 	def getAdvertisedLifetime(self):
 		if not self.advertisedLifetime:
@@ -82,6 +85,9 @@ class SummaryBuilder(object):
 		self.steks = StekHostDict()
 		self.rankings = getSiteRankings()
 		self.maxLifetimes = defaultdict(lambda: timedelta(seconds=0))
+		self.lifetimeHints = defaultdict(lambda: timedelta(seconds=0))
+		self.sessionIdSupport = defaultdict(lambda: False)
+		self.sessionTicketSupport = defaultdict(lambda: False)
 		self.stekResumeLifetimes = defaultdict()
 		self.stekResumes = StekHostDict()
 		self.sessionResumeLifetimes = defaultdict()
@@ -136,10 +142,13 @@ class SummaryBuilder(object):
 			stek = entry['data']['tls']['session_ticket']['value']
 			ts = parse(entry['timestamp'])
 			self.steks[entry['ip']].addStek(stek, ts)
+			self.steks[entry['ip']].advertised = timedelta(seconds=int(entry['data']['tls']['session_ticket'].get('lifetime_hint', 0)))
 			self.stats['session_ticket'] += 1
+			self.sessionTicketSupport[entry['ip']] = True
 		if 'session_id' in entry['data']['tls']['server_hello']:
 			if entry['data']['tls']['server_hello']['session_id'] != "":
 				self.stats['session_id'] += 1
+				self.sessionIdSupport[entry['ip']] = True
 
 	def exportStek(self):
 		for f in sorted(glob.glob('*-stek.json'), reverse=True):
@@ -173,6 +182,9 @@ class SummaryBuilder(object):
 			# Common failures
 			('The distribution of the {:,} failed connections is as follows: {}'
 				).format(total_errors, self.errorSummary()),
+			# Feature support
+			('Of the {:,} hosts considered, {:.0%} supported session resumption via session IDs and {:.0%} supported session resumption via session tickets.'
+				).format(dataset_total, len(self.sessionIdSupport)/dataset_total, len(self.sessionTicketSupport)/dataset_total)
 		]
 		print measurements
 
@@ -218,17 +230,15 @@ class SummaryBuilder(object):
 		debug('No data found for figure 1')
 
 	def plotFigure2(self):
-		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.stekResumeLifetimes.values()]
-		advertisedLifetimes = list()
-		for stek_host in self.stekResumeLifetimes.values():
-			advertisedLifetimes.append(stek_host.getAdvertisedLifetime())
-		if minuteLifetimes and advertisedLifetimes:
-			return plotMinutelyCDF(data=minuteLifetimes, advertised=advertisedLifetimes, is_stek=True)
+		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.lifetimeHints.values()]
+
+		if minuteLifetimes:
+			return plotMinutelyCDF(data=minuteLifetimes, is_stek=True)
 		debug('No data found for figure 2')
 
 
 	def plotFigure3(self):
-		dayLifetimes = [td.total_seconds()/SECONDS_PER_DAY for td in self.maxLifetimes.values()]
+		dayLifetimes = [td.total_seconds()/SECONDS_PER_DAY for td in self.lifetimeHints.values()]
 		plotSTEKCDF(dayLifetimes)
 
 	def plotFigure4(self):
@@ -242,9 +252,11 @@ class SummaryBuilder(object):
 	def run(self):
 		self.getChurn()
 		self.exportStek()
-		for host in self.steks.values():
+		for host in self.consistentTop1M:
+			host = self.steks[host]
 			host.computeLifetimes()
 			self.maxLifetimes[host.host] = host.getMaxLifetime()
+			self.lifetimeHints[host.host] = host.advertised
 		for host in self.stekResumes.values():
 			host.computeLifetimes()
 			self.stekResumeLifetimes[host.host] = host.getMaxLifetime()

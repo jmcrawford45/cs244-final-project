@@ -15,45 +15,51 @@ DATA_SET_URL = 'https://scans.io/series/alexa-dl-top1mil'
 DATA_BASE_URL = 'https://scans.io/zsearch/'
 COMPRESSION_EXT = '.lz4'
 HASH_FILE = 'known_hashes.txt'
+INT_SIZE = 4
+# Default - RFC 5077
+KEY_LEN = 16
+
 
 # Extract the session key identifier if possible from the ticket
 def extractStek(ticket):
-    candidates = list()
-    KEY_LEN = 16
-    # Default - RFC 5077
+    candidates = list(ticket)
     try:
+        prefix_len = KEY_LEN
         candidates.append(
-            struct.unpack('{}s'.format(KEY_LEN), ticket)[0]
+            struct.unpack('{}s'.format(KEY_LEN), ticket[:prefix_len])[0]
         )
     except Exception, e:
         debug(e)
     # LibreSSL - ssl_session_st
     try:
+        prefix_len = KEY_LEN + 2 * INT_SIZE 
         candidates.append(
-            struct.unpack('ii{}s'.format(KEY_LEN), ticket)[2]
+            struct.unpack('ii{}s'.format(KEY_LEN), ticket[:prefix_len])[2]
         )
     except Exception, e:
         debug(e)
     #OpenSSL - ssl_session_st
     try:
+        prefix_len = 2 * INT_SIZE + 64 + KEY_LEN
         # Todo: Confirm second size_t is 32 bits
         candidates.append(
-            struct.unpack('ii64s{}s'.format(KEY_LEN), ticket)[3]
+            struct.unpack('ii64s{}s'.format(KEY_LEN), ticket[:prefix_len])[3]
         )
     except Exception, e:
         debug(e)
     #GNUTLS - session_ticket.{hc}
     try:
+        prefix_len = INT_SIZE + KEY_LEN
         # Todo: Confirm first ssize_t is 32 bits
         candidates.append(
-            struct.unpack('i{}s'.format(KEY_LEN), ticket)[1]
+            struct.unpack('i{}s'.format(KEY_LEN), ticket[:prefix_len])[1]
         )
     except Exception, e:
         debug(e)
     #mbedTLS - ssl_ticket.c
     try:
         candidates.append(
-            struct.unpack('4s', ticket)[0]
+            struct.unpack('4s', ticket[:4])[0]
         )
     except Exception, e:
         debug(e)
