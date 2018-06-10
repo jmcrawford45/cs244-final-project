@@ -11,7 +11,7 @@ import sys
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
-DATA_RE = 'test.json'
+DATA_RE = 'all-steks.json'
 
 class StekHost(object):
 
