@@ -11,7 +11,7 @@ import sys
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
-DATA_RE = 'all-steks.json'
+DATA_RE = 'test.json'
 
 class StekHost(object):
 
@@ -108,11 +108,11 @@ class SummaryBuilder(object):
 					dayMap[ts].add(entry['ip'])
 					churnDays[entry['ip']].add(ts)
 		prevSeen = set()
-		for ts in sorted(dailyChurn):
+		for ts in sorted(dayMap):
+			seen = dayMap[ts]
 			if not prevSeen:
 				dailyChurn.append(0)
 			else:
-				seen = dailyChurn[ts]
 				dailyChurn.append(1-len(seen&prevSeen)/len(seen))
 			prevSeen = seen
 		self.churn = {k: len(v) for k,v in churnDays.items()}
