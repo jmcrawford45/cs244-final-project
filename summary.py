@@ -89,17 +89,14 @@ class SummaryBuilder(object):
 		self.lifetimeHints = defaultdict(lambda: timedelta(seconds=0))
 		self.sessionIdSupport = defaultdict(lambda: False)
 		self.sessionTicketSupport = defaultdict(lambda: False)
-		self.stekResumeLifetimes = defaultdict()
-		self.stekResumes = StekHostDict()
-		self.sessionResumeLifetimes = defaultdict()
-		self.sessionResumes = StekHostDict()
 		self.entry_count = 0
 
 	# Compute the daily churn and store how many days
 	# each IP was in the top 1M in the churn dict.
 	def getChurn(self):
-		self.dailyChurn = list()
-		self.dayMap = defaultdict(lambda: set())
+		dailyChurn = list()
+		dayMap = defaultdict(lambda: set())
+		churnDays = defaultdict(lambda: set())
 		for f in sorted(glob.glob(DATA_RE), reverse=True):
 			with open(f) as data:
 				for raw in data:
@@ -108,19 +105,21 @@ class SummaryBuilder(object):
 						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
 					entry = json.loads(raw)
 					ts = parse(entry['timestamp']).date()
-					self.dayMap[ts].add(entry['ip'])
+					dayMap[ts].add(entry['ip'])
+					churnDays[entry['ip']].add(ts)
 		prevSeen = set()
-		for ts in sorted(self.dailyChurn):
+		for ts in sorted(dailyChurn):
 			if not prevSeen:
-				self.dailyChurn.append(0)
+				dailyChurn.append(0)
 			else:
-				seen = self.dailyChurn[ts]
-				self.dailyChurn.append(1-len(seen&prevSeen)/len(seen))
+				seen = dailyChurn[ts]
+				dailyChurn.append(1-len(seen&prevSeen)/len(seen))
 			prevSeen = seen
+		self.churn = {k: len(v) for k,v in churnDays.items()}
 		self.consistentTop1M = [k for k,v in self.churn.items() if v == max(self.churn.values())]
 		print 'churn'
-		print self.dailyChurn
-		# plotChurn(self.dailyChurn)
+		print dailyChurn
+		# plotChurn(dailyChurn)
 
 	def computeLifetimes(self):
 		for host in self.steks.values():
@@ -243,7 +242,7 @@ class SummaryBuilder(object):
 		return res
 
 	def plotFigure1(self):
-		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
+		# minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
 		# if minuteLifetimes:
 		# 	return plotMinutelyCDF(data=minuteLifetimes, is_stek=False)
 		debug('No data found for figure 1')
@@ -280,12 +279,6 @@ class SummaryBuilder(object):
 			host.computeLifetimes()
 			self.maxLifetimes[host.host] = host.getMaxLifetime()
 			self.lifetimeHints[host.host] = host.advertised
-		for host in self.stekResumes.values():
-			host.computeLifetimes()
-			self.stekResumeLifetimes[host.host] = host.getMaxLifetime()
-		for host in self.sessionResumes.values():
-			host.computeLifetimes()
-			self.sessionResumeLifetimes[host.host] = host.getMaxLifetime()
 		# self.writeSteks()
 		# self.plotFigure1()
 		self.plotFigure2()
