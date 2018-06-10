@@ -8,11 +8,11 @@ from datetime import datetime, timedelta
 from dateutil.parser import parse
 from base64 import b64decode
 import sys
+from plotter import *
 
 SECONDS_PER_DAY = 60*60*24
 SECONDS_PER_MINUTE = 60
 DATA_RE = 'all-steks.json'
-GRAB_FIRST = 100000
 
 class StekHost(object):
 
@@ -92,6 +92,8 @@ class SummaryBuilder(object):
 		self.sessionTicketSupport = defaultdict(lambda: False)
 		self.entry_count = 0
 
+
+
 	# Compute the daily churn and store how many days
 	# each IP was in the top 1M in the churn dict.
 	def getChurn(self):
@@ -102,8 +104,6 @@ class SummaryBuilder(object):
 			with open(f) as data:
 				for raw in data:
 					entry = json.loads(raw)
-					if self.rankings[entry['ip']] > GRAB_FIRST:
-						continue
 					self.entry_count += 1
 					if self.entry_count % 100000 == 0:
 						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
@@ -120,11 +120,7 @@ class SummaryBuilder(object):
 			prevSeen = seen
 		self.churn = {k: len(v) for k,v in churnDays.items()}
 		self.consistentTop1M = [k for k,v in self.churn.items() if v == max(self.churn.values())]
-		print 'consistentTop1M'
-		print self.consistentTop1M
-		print 'churn'
-		print dailyChurn
-		# plotChurn(dailyChurn)
+		plotChurn(dailyChurn)
 
 	def computeLifetimes(self):
 		for host in self.steks.values():
@@ -175,8 +171,6 @@ class SummaryBuilder(object):
 			with open(f) as data:
 				for raw in data:
 					entry = json.loads(raw)
-					if self.rankings[entry['ip']] > GRAB_FIRST:
-						continue
 					self.entry_count += 1
 					if self.entry_count % 100000 == 0:
 						print >> sys.stderr, '{} entries processed'.format(self.entry_count)
@@ -249,34 +243,30 @@ class SummaryBuilder(object):
 		return res
 
 	def plotFigure1(self):
-		# minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
-		# if minuteLifetimes:
-		# 	return plotMinutelyCDF(data=minuteLifetimes, is_stek=False)
+		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.sessionResumeLifetimes.values()]
+		if minuteLifetimes:
+			return plotMinutelyCDF(data=minuteLifetimes, is_stek=False)
 		debug('No data found for figure 1')
 
 	def plotFigure2(self):
 		minuteLifetimes = [td.total_seconds()/SECONDS_PER_MINUTE for td in self.lifetimeHints.values()]
 		print 'figure 2'
-		print minuteLifetimes
-		# if minuteLifetimes:
-		# 	return plotMinutelyCDF(data=minuteLifetimes, is_stek=True)
+		if minuteLifetimes:
+			return plotMinutelyCDF(data=minuteLifetimes, is_stek=True)
 		debug('No data found for figure 2')
 
 
 	def plotFigure3(self):
 		dayLifetimes = [td.total_seconds()/SECONDS_PER_DAY for td in self.lifetimeHints.values()]
-		print 'figure 3'
-		print dayLifetimes
-		# plotSTEKCDF(dayLifetimes)
+		if dayLifetimes:
+			plotSTEKCDF(dayLifetimes)
 
 	def plotFigure4(self):
-		print 'figure 4'
-		print self.classifyStekReuse()
-		# plotSTEKReuse(
-		# 	self.classifyStekReuse(),
-		# 	self.FIGURE_3_BAR_NAMES,
-		# 	self.FIGURE_3_CATEGORIES
-		# )
+		plotSTEKReuse(
+			self.classifyStekReuse(),
+			self.FIGURE_3_BAR_NAMES,
+			self.FIGURE_3_CATEGORIES
+		)
 
 	def run(self):
 		self.getChurn()
@@ -286,8 +276,7 @@ class SummaryBuilder(object):
 			host.computeLifetimes()
 			self.maxLifetimes[host.host] = host.getMaxLifetime()
 			self.lifetimeHints[host.host] = host.advertised
-		# self.writeSteks()
-		# self.plotFigure1()
+		self.plotFigure1()
 		self.plotFigure2()
 		self.plotFigure3()
 		self.plotFigure4()
