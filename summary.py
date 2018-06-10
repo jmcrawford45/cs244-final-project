@@ -117,6 +117,8 @@ class SummaryBuilder(object):
 			prevSeen = seen
 		self.churn = {k: len(v) for k,v in churnDays.items()}
 		self.consistentTop1M = [k for k,v in self.churn.items() if v == max(self.churn.values())]
+		print 'consistentTop1M'
+		print self.consistentTop1M
 		print 'churn'
 		print dailyChurn
 		# plotChurn(dailyChurn)
