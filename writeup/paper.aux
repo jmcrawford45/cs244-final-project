@@ -16,33 +16,50 @@
 \gdef\HyperFirstAtBeginDocument#1{#1}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\citation{RFC5077}
+\citation{handshake}
+\citation{handshake}
 \citation{Springall:2016:MSH:2987443.2987480}
-\bibstyle{ACM-Reference-Format}
-\bibdata{reference}
-\bibcite{RFC5077}{{1}{2008}{{Salowey et~al\unhbox \voidb@x \hbox {.}}}{{Salowey, Zhou, Eronen, and Tschofenig}}}
-\bibcite{Springall:2016:MSH:2987443.2987480}{{2}{2016}{{Springall et~al\unhbox \voidb@x \hbox {.}}}{{Springall, Durumeric, and Halderman}}}
+\citation{Durumeric:2014:MH:2663716.2663755}
+\citation{RFC4507}
 \select@language{english}
 \@writefile{toc}{\select@language{english}}
 \@writefile{lof}{\select@language{english}}
 \@writefile{lot}{\select@language{english}}
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A diagram from Tobarra et. al. demonstrating the latency overhead incurred by TLS handshakes \citep  {handshake}. An insecure alternative such as TCP needs only a three way handshake which will typically complete more quickly than a TLS handshake.\relax }}{1}{figure.caption.3}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Data Source}{1}{section.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Churn}{1}{subsection.2.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Reproductions}{1}{section.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Figure 2}{1}{subsection.3.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Figures 3-4}{1}{subsection.3.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Evaluation}{1}{section.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Conclusion}{1}{section.5}}
-\@writefile{toc}{\contentsline {section}{References}{1}{section*.8}}
+\citation{RFC5077}
+\citation{RFC5077}
+\citation{RFC5077}
+\citation{Springall:2016:MSH:2987443.2987480}
+\citation{durumeric2013zmap}
+\citation{durumericinternet}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces A diagram from RFC 5077 showing the abbreviated handshake for connections supporting session tickets \citep  {RFC5077}. This represents a significant reduction in round trip time from the standard TLS handshake in Figure 1.\relax }}{2}{figure.caption.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Methodology}{2}{section.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Results}{2}{section.3}}
+\citation{RFC5077}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces The distribution of error messages when attempting to complete TLS handshakes. Connection refused messages and EOF messages typically indicate servers which do not accept connections over the TLS default port of 443. I/O timeouts represent hosts which did not respond to a TLS handshake message within 72 seconds. The majority of the handshake failure messages were due to hosts presenting a non browser-trusted certificate.\relax }}{3}{table.caption.5}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{my-label}{{1}{3}{The distribution of error messages when attempting to complete TLS handshakes. Connection refused messages and EOF messages typically indicate servers which do not accept connections over the TLS default port of 443. I/O timeouts represent hosts which did not respond to a TLS handshake message within 72 seconds. The majority of the handshake failure messages were due to hosts presenting a non browser-trusted certificate.\relax }{table.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Advertised Session Lifetimes}{3}{subsection.3.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Reuse of Encryption Keys}{3}{subsection.3.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces A figure depicting the percentage of Alexa Top 1 Million hosts which are not present in the subsequent day of data collection. For example, a value of 1\% on day 5 indicates that between day 5 and 6, 1,000 IPs were not present in the subsequent A record lookups. A portion of this churn might be due to variance in A record responses across time.\relax }}{3}{figure.caption.6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces A cumulative distribution plot of advertised session ticket lifetimes. Sudden spikes in the CDF likely indicate default configurations for popular deployments. The high initial value represents a combination of sites which do not support the session ticket extension or who advertise a small lifetime for STEKs.\relax }}{3}{figure.caption.7}}
+\bibstyle{ACM-Reference-Format}
+\bibdata{reference}
+\bibcite{durumericinternet}{{1}{[n. d.]a}{{Durumeric et~al\unhbox \voidb@x \hbox {.}}}{{Durumeric, Halderman, et~al\unhbox \voidb@x \hbox {.}}}}
+\bibcite{Durumeric:2014:MH:2663716.2663755}{{2}{2014}{{Durumeric et~al\unhbox \voidb@x \hbox {.}}}{{Durumeric, Li, Kasten, Amann, Beekman, Payer, Weaver, Adrian, Paxson, Bailey, and Halderman}}}
+\bibcite{durumeric2013zmap}{{3}{[n. d.]b}{{Durumeric et~al\unhbox \voidb@x \hbox {.}}}{{Durumeric, Wustrow, and Halderman}}}
+\bibcite{RFC4507}{{4}{2006}{{Salowey et~al\unhbox \voidb@x \hbox {.}}}{{Salowey, Zhou, Eronen, and Tschofenig}}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces A cumulative distribution plot showing the maxed observed lifetime for a session ticket encryption key (STEK). An alternative measurement of STEK reuse would be the maximum continuous interval of identical STEKs; however, the maximum lifetime of any one STEK for a host better accounts for jitter in A record responses.\relax }}{4}{figure.caption.8}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Discussion and Future Work}{4}{section.4}}
+\@writefile{toc}{\contentsline {section}{References}{4}{section*.10}}
+\bibcite{RFC5077}{{5}{2008}{{Salowey et~al\unhbox \voidb@x \hbox {.}}}{{Salowey, Zhou, Eronen, and Tschofenig}}}
+\bibcite{Springall:2016:MSH:2987443.2987480}{{6}{2016}{{Springall et~al\unhbox \voidb@x \hbox {.}}}{{Springall, Durumeric, and Halderman}}}
+\bibcite{handshake}{{7}{2008}{{Tobarra et~al\unhbox \voidb@x \hbox {.}}}{{Tobarra, Cazorla, Cuartero, and Diaz}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.65pt}
 \newlabel{tocindent2}{11.49998pt}
 \newlabel{tocindent3}{0pt}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \blindtext \relax }}{2}{figure.caption.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \blindtext \relax }}{2}{figure.caption.4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces \blindtext \relax }}{3}{figure.caption.5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces \blindtext \relax }}{3}{figure.caption.6}}
-\newlabel{TotPages}{{3}{3}{}{page.3}{}}
+\newlabel{TotPages}{{5}{5}{}{page.5}{}}

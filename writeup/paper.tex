@@ -40,20 +40,34 @@
 \author{Jared Crawford}
 % \authornote{Note}
 % \orcid{1234-5678-9012}
-% \affiliation{%
-%   \institution{Affiliation}
-%   \streetaddress{Address}
-%   \city{City} 
-%   \state{State} 
-%   \postcode{Zipcode}
-% }
+\affiliation{%
+  \institution{Stanford University}
+  \streetaddress{450 Serra Mall}
+  \city{Stanford} 
+  \state{California} 
+  \postcode{94305}
+}
 \email{jared13@stanford.edu}
 
 % The default list of authors is too long for headers}
 \renewcommand{\shortauthors}{Crawford}
 
 \begin{abstract}
-    Server authenticity, privacy over communication lines, and integrity of transport level data are desirable for many popular applications such as web browsing, email, and Voice over IP. The Transport Layer Security protocol (TLS) provides these security properties between web servers and web browsers at the transport layer. A typical connection over TLS today is a multistep interactive process between server and client which includes an exchange of public key information, a negotiation on which ciphers to use for the resulting communication, and advertisement for support of a variety of TLS extensions. Thus, establishing this secure communication line incurs an initial latency overhead in the form of multiple transport level handshake round trip times. \cite{RFC5077} To reduce this overhead for the common case of bursty connections in frequent but short intervals, HTTPS supports many mechanisms (such as TLS session tickets and private value reuse in public key exchange) to reuse these secure connection values for a short period of time. These performance optimizations tradeoff with the forward secrecy of user web traffic. In early 2016, a team at the University of Michigan investigated the extent to which the most popular sites were reusing these values in order to make site operators more aware of the risk involved in doing so\cite{Springall:2016:MSH:2987443.2987480}. In this report, I attempt to reproduce these findings by collecting more recent data (May 2018) on TLS cryptography shortcutes.
+    Server authenticity, privacy over communication lines, and integrity of transport level data are desirable for many popular applications such as web browsing, email, and Voice over IP. 
+    The Transport Layer Security protocol (TLS) provides these security properties between application servers and web browsers through various cryptographic primitives. 
+    A typical connection over TLSv1.2 today is a multistep interactive process between server and client which includes an exchange of public key information, a negotiation on which ciphers to use for the resulting communication, and advertisement for support of a variety of TLS extensions. 
+    Thus, establishing this secure communication line incurs an initial latency overhead in the form of multiple transport level handshake round trip times. 
+    
+    
+    \begin{figure}[hp]
+    \centering
+    \includegraphics[width=\linewidth]{figures/handshake.png}
+    \caption{A diagram from Tobarra et. al. demonstrating the latency overhead incurred by TLS handshakes \cite{handshake}. An insecure alternative such as TCP needs only a three way handshake which will typically complete more quickly than a TLS handshake.}
+    \end{figure}
+    
+    As a performance optimization for the common case of bursty connections in frequent but short intervals, TLS supports extensions which allow a web browser to resume a previous connection with a server without completing a new handshake. However, these mechanisms trade off with an important security property of user traffic: perfect forward secrecy. In a perfect forward secret scheme, each separate server-client connection is encrypted using a unique session key. Immediately after the connection terminates, both parties are responsible for deleting the key. Once the ephemeral key has been deleted, the contents of this communication cannot be decrypted even in the event of server compromise. However, in an imperfect secret scheme, one party will maintain a temporary cache of session state including the session key to allow frequent reconnections to complete more quickly. By maintaining session state across connections, a client can resume subsequent connections without having to renegotiate ciphers and derive a new session key. The maximum lifetime of a session key is thus a tradeoff between privacy and reconnect latency in such a scheme.
+    
+   
 \end{abstract}
 
 \maketitle

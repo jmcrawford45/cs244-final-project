@@ -10,46 +10,55 @@ Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
 Reallocated global_strs (elt_size=20001) to 20 items from 10.
 Reallocated glb_str_end (elt_size=4) to 20 items from 10.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty year in durumericinternet
+Warning--numpages field, but no articleno or eid field, in Durumeric:2014:MH:2663716.2663755
+Warning--empty year in durumeric2013zmap
+Warning--empty booktitle in durumeric2013zmap
+Warning--empty publisher in durumeric2013zmap
+Warning--empty address in durumeric2013zmap
+Warning--page numbers missing in both pages and numpages fields in durumeric2013zmap
 Warning--numpages field, but no articleno or eid field, in Springall:2016:MSH:2987443.2987480
-You've used 2 entries,
+Warning--no journal in handshake
+Warning--no number and no volume in handshake
+You've used 7 entries,
             5795 wiz_defined-function locations,
-            1339 strings with 15964 characters,
-and the built_in function-call counts, 2884 in all, are:
-= -- 328
-> -- 93
-< -- 1
-+ -- 30
-- -- 69
-* -- 231
-:= -- 296
-add.period$ -- 12
-call.type$ -- 2
-change.case$ -- 15
-chr.to.int$ -- 2
-cite$ -- 3
-duplicate$ -- 200
-empty$ -- 138
-format.name$ -- 36
-if$ -- 585
-int.to.chr$ -- 2
+            1367 strings with 16929 characters,
+and the built_in function-call counts, 8859 in all, are:
+= -- 911
+> -- 407
+< -- 2
++ -- 138
+- -- 210
+* -- 765
+:= -- 995
+add.period$ -- 38
+call.type$ -- 7
+change.case$ -- 59
+chr.to.int$ -- 6
+cite$ -- 17
+duplicate$ -- 635
+empty$ -- 450
+format.name$ -- 155
+if$ -- 1860
+int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 5
-newline$ -- 63
-num.names$ -- 16
-pop$ -- 63
+missing$ -- 19
+newline$ -- 109
+num.names$ -- 55
+pop$ -- 283
 preamble$ -- 1
-purify$ -- 33
+purify$ -- 109
 quote$ -- 0
-skip$ -- 73
+skip$ -- 211
 stack$ -- 0
-substring$ -- 326
-swap$ -- 20
-text.length$ -- 84
+substring$ -- 780
+swap$ -- 55
+text.length$ -- 168
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 60
-warning$ -- 1
-while$ -- 12
+type$ -- 190
+warning$ -- 10
+while$ -- 36
 width$ -- 0
-write$ -- 83
-(There was 1 warning)
+write$ -- 174
+(There were 10 warnings)

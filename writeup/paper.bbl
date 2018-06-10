@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{2}
+\begin{thebibliography}{7}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -37,6 +37,65 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
+\bibitem[\protect\citeauthoryear{Durumeric, Halderman, et~al\mbox{.}}{Durumeric
+  et~al\mbox{.}}{[n. d.]a}]%
+        {durumericinternet}
+\bibfield{author}{\bibinfo{person}{Z Durumeric}, \bibinfo{person}{JA
+  Halderman}, {et~al\mbox{.}}} \bibinfo{year}{[n. d.]}\natexlab{a}.
+\newblock \bibinfo{title}{Internet-wide scan data repository}.
+\newblock   (\bibinfo{year}{[n. d.]}).
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Durumeric, Li, Kasten, Amann, Beekman, Payer,
+  Weaver, Adrian, Paxson, Bailey, and Halderman}{Durumeric
+  et~al\mbox{.}}{2014}]%
+        {Durumeric:2014:MH:2663716.2663755}
+\bibfield{author}{\bibinfo{person}{Zakir Durumeric}, \bibinfo{person}{Frank
+  Li}, \bibinfo{person}{James Kasten}, \bibinfo{person}{Johanna Amann},
+  \bibinfo{person}{Jethro Beekman}, \bibinfo{person}{Mathias Payer},
+  \bibinfo{person}{Nicolas Weaver}, \bibinfo{person}{David Adrian},
+  \bibinfo{person}{Vern Paxson}, \bibinfo{person}{Michael Bailey}, {and}
+  \bibinfo{person}{J.~Alex Halderman}.} \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{The Matter of Heartbleed}. In
+  \bibinfo{booktitle}{{\em Proceedings of the 2014 Conference on Internet
+  Measurement Conference}} {\em (\bibinfo{series}{IMC '14})}.
+  \bibinfo{publisher}{ACM}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{pages}{475--488}.
+\newblock
+\showISBNx{978-1-4503-3213-2}
+\showDOI{%
+\url{https://doi.org/10.1145/2663716.2663755}}
+
+
+\bibitem[\protect\citeauthoryear{Durumeric, Wustrow, and Halderman}{Durumeric
+  et~al\mbox{.}}{[n. d.]b}]%
+        {durumeric2013zmap}
+\bibfield{author}{\bibinfo{person}{Zakir Durumeric}, \bibinfo{person}{Eric
+  Wustrow}, {and} \bibinfo{person}{J~Alex Halderman}.} \bibinfo{year}{[n.
+  d.]}\natexlab{b}.
+\newblock \showarticletitle{ZMap: Fast Internet-wide Scanning and Its Security
+  Applications.}
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Salowey, Zhou, Eronen, and Tschofenig}{Salowey
+  et~al\mbox{.}}{2006}]%
+        {RFC4507}
+\bibfield{author}{\bibinfo{person}{J. Salowey}, \bibinfo{person}{H. Zhou},
+  \bibinfo{person}{P. Eronen}, {and} \bibinfo{person}{H. Tschofenig}.}
+  \bibinfo{year}{2006}\natexlab{}.
+\newblock \bibinfo{booktitle}{{\em Transport Layer Security (TLS) Session
+  Resumption without Server-Side State}}.
+\newblock \bibinfo{type}{RFC} 4507. \bibinfo{institution}{RFC Editor}.
+\newblock
+\showISSN{2070-1721}
+\showURL{%
+\url{http://www.rfc-editor.org/rfc/rfc4507.txt}}
+\newblock
+\shownote{\url{http://www.rfc-editor.org/rfc/rfc4507.txt}.}
+
+
 \bibitem[\protect\citeauthoryear{Salowey, Zhou, Eronen, and Tschofenig}{Salowey
   et~al\mbox{.}}{2008}]%
         {RFC5077}
@@ -69,6 +128,18 @@
 \showISBNx{978-1-4503-4526-2}
 \showDOI{%
 \url{https://doi.org/10.1145/2987443.2987480}}
+
+
+\bibitem[\protect\citeauthoryear{Tobarra, Cazorla, Cuartero, and Diaz}{Tobarra
+  et~al\mbox{.}}{2008}]%
+        {handshake}
+\bibfield{author}{\bibinfo{person}{Llanos Tobarra}, \bibinfo{person}{Diego
+  Cazorla}, \bibinfo{person}{Fernando Cuartero}, {and}
+  \bibinfo{person}{Gregorio Diaz}.} \bibinfo{year}{2008}\natexlab{}.
+\newblock \showarticletitle{Formal verification of TLS handshake and extensions
+  for wireless networks}.
+\newblock  (\bibinfo{date}{07} \bibinfo{year}{2008}).
+\newblock
 
 
 \end{thebibliography}
